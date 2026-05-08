@@ -319,9 +319,31 @@ input[type="range"]::-webkit-slider-thumb {
 .secret-feedback.warn { color: #ffa94d; }
 
 /* ===== Desktop ===== */
-@media (min-width: 600px) {
-  .site-header h1    { font-size: 2.2rem; }
-  .cipher-section    { margin: 24px auto; max-width: 560px; }
-  .cipher-header h2  { font-size: 1.5rem; }
-  .cipher-input      { font-size: 1.05rem; }
+@media (min-width: 700px) {
+  .site-header h1      { font-size: 2.2rem; }
+  .cipher-section      { margin: 24px auto; max-width: 860px; }
+  .cipher-header h2    { font-size: 1.5rem; }
+  .cipher-input        { font-size: 1.05rem; }
+
+  .cipher-boxes {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .cipher-boxes .cipher-input { flex: 1; }
+
+  .cipher-arrow {
+    font-size: 1.8rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .secret-boxes {
+    flex-direction: column !important;
+    max-width: 480px;
+    margin: 0 auto;
+  }
 }
