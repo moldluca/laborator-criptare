@@ -45,3 +45,52 @@ function caesarDecrypt(text, shift) {
     flash(plainEl);
   });
 })();
+
+// ===== VIGENÈRE =====
+
+function vigenereProcess(text, key, encrypt) {
+  key = key.toUpperCase().replace(/[^A-Z]/g, '');
+  if (!key) return text;
+  let ki = 0;
+  return text.split('').map(ch => {
+    const isUpper = ch >= 'A' && ch <= 'Z';
+    const isLower = ch >= 'a' && ch <= 'z';
+    const isDigit = ch >= '0' && ch <= '9';
+    if (isUpper || isLower) {
+      const base  = isUpper ? 65 : 97;
+      const shift = key[ki % key.length].charCodeAt(0) - 65;
+      const s     = encrypt ? shift : (26 - shift);
+      ki++;
+      return String.fromCharCode(((ch.charCodeAt(0) - base + s) % 26) + base);
+    }
+    if (isDigit) {
+      const shift = key[ki % key.length].charCodeAt(0) - 65;
+      const s     = encrypt ? shift % 10 : (10 - shift % 10);
+      ki++;
+      return String.fromCharCode(((ch.charCodeAt(0) - 48 + s) % 10) + 48);
+    }
+    return ch;
+  }).join('');
+}
+
+(function initVigenere() {
+  const plainEl = document.getElementById('vigenere-plain');
+  const encEl   = document.getElementById('vigenere-encrypted');
+  const keyEl   = document.getElementById('vigenere-key');
+
+  keyEl.addEventListener('input', () => {
+    keyEl.value = keyEl.value.toUpperCase().replace(/[^A-Z]/g, '');
+    encEl.value = vigenereProcess(plainEl.value, keyEl.value, true);
+    flash(encEl);
+  });
+
+  plainEl.addEventListener('input', () => {
+    encEl.value = vigenereProcess(plainEl.value, keyEl.value, true);
+    flash(encEl);
+  });
+
+  encEl.addEventListener('input', () => {
+    plainEl.value = vigenereProcess(encEl.value, keyEl.value, false);
+    flash(plainEl);
+  });
+})();
