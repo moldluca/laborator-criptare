@@ -94,3 +94,83 @@ function vigenereProcess(text, key, encrypt) {
     flash(plainEl);
   });
 })();
+
+// ===== SUBSTITUȚIE EXTINSĂ =====
+
+const SUBST_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?/~`\'"';
+
+let substEnc = {};
+let substDec = {};
+
+function shuffleStr(str) {
+  const arr = str.split('');
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.join('');
+}
+
+function generateSubstMapping() {
+  const shuffled = shuffleStr(SUBST_SET);
+  substEnc = {};
+  substDec = {};
+  for (let i = 0; i < SUBST_SET.length; i++) {
+    const from = SUBST_SET[i];
+    const to   = shuffled[i];
+    substEnc[from] = to;
+    substEnc[from.toLowerCase()] = to;
+    substDec[to] = from;
+    substDec[to.toLowerCase()] = from;
+  }
+}
+
+function substEncrypt(text) {
+  return text.split('').map(ch => (substEnc[ch] !== undefined ? substEnc[ch] : ch)).join('');
+}
+
+function substDecrypt(text) {
+  return text.split('').map(ch => (substDec[ch] !== undefined ? substDec[ch] : ch)).join('');
+}
+
+function escHtml(ch) {
+  return ch.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderSubstTable() {
+  const el = document.getElementById('subst-table');
+  el.innerHTML = SUBST_SET.split('').map(ch => {
+    const to = substEnc[ch] || '?';
+    return `<div class="subst-pair">
+      <div class="from">${escHtml(ch)}</div>
+      <div>↓</div>
+      <div class="to">${escHtml(to)}</div>
+    </div>`;
+  }).join('');
+}
+
+(function initSubst() {
+  const plainEl    = document.getElementById('subst-plain');
+  const encEl      = document.getElementById('subst-encrypted');
+  const shuffleBtn = document.getElementById('subst-shuffle');
+
+  generateSubstMapping();
+  renderSubstTable();
+
+  shuffleBtn.addEventListener('click', () => {
+    generateSubstMapping();
+    renderSubstTable();
+    encEl.value = substEncrypt(plainEl.value);
+    flash(encEl);
+  });
+
+  plainEl.addEventListener('input', () => {
+    encEl.value = substEncrypt(plainEl.value);
+    flash(encEl);
+  });
+
+  encEl.addEventListener('input', () => {
+    plainEl.value = substDecrypt(encEl.value);
+    flash(plainEl);
+  });
+})();
