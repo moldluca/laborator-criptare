@@ -174,3 +174,49 @@ function renderSubstTable() {
     flash(plainEl);
   });
 })();
+
+// ===== CODUL MORSE =====
+
+const MORSE_ENC = {
+  A:'.-',   B:'-...',  C:'-.-.',  D:'-..',   E:'.',    F:'..-.',
+  G:'--.',  H:'....', I:'..',    J:'.---',  K:'-.-',  L:'.-..',
+  M:'--',   N:'-.',   O:'---',   P:'.--.',  Q:'--.-', R:'.-.',
+  S:'...',  T:'-',    U:'..-',   V:'...-',  W:'.--',  X:'-..-',
+  Y:'-.--', Z:'--..',
+  '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-',
+  '5':'.....','6':'-....','7':'--...','8':'---..','9':'----.',
+  '.':'.-.-.-', ',':'--..--', '?':'..--..', '!':'-.-.--',
+  '(':'-.--.', ')':'-.--.-', ':':'---...',  ';':'-.-.-.',
+  '=':'-...-',  '+':'.-.-.', '-':'-....-',  '_':'..--.-',
+  '"':'.-..-.', '$':'...-..-', '@':'.--.-.'
+};
+
+const MORSE_DEC = Object.fromEntries(Object.entries(MORSE_ENC).map(([k, v]) => [v, k]));
+
+function textToMorse(text) {
+  return text.toUpperCase().split(' ').map(word =>
+    word.split('').map(ch => MORSE_ENC[ch] || ch).join(' ')
+  ).join(' / ');
+}
+
+function morseToText(morse) {
+  return morse.split(' / ').map(word =>
+    word.trim().split(' ').map(code => MORSE_DEC[code] || code).join('')
+  ).join(' ');
+}
+
+(function initMorse() {
+  const plainEl = document.getElementById('morse-plain');
+  const encEl   = document.getElementById('morse-encrypted');
+
+  plainEl.addEventListener('input', () => {
+    encEl.value = textToMorse(plainEl.value);
+    flash(encEl);
+  });
+
+  encEl.addEventListener('input', () => {
+    plainEl.value = morseToText(encEl.value);
+    flash(plainEl);
+  });
+})();
+})();
