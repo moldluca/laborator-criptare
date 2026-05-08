@@ -26,22 +26,25 @@ function caesarDecrypt(text, shift) {
 (function initCaesar() {
   const plainEl = document.getElementById('caesar-plain');
   const encEl   = document.getElementById('caesar-encrypted');
-  const shiftEl = document.getElementById('caesar-shift');
-  const dispEl  = document.getElementById('caesar-shift-display');
+  let currentShift = 3;
 
-  shiftEl.addEventListener('input', () => {
-    dispEl.textContent = shiftEl.value;
-    encEl.value = caesarEncrypt(plainEl.value, parseInt(shiftEl.value, 10));
+  document.getElementById('caesar-presets').addEventListener('click', (e) => {
+    const btn = e.target.closest('.preset-btn');
+    if (!btn) return;
+    document.querySelectorAll('#caesar-presets .preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentShift = parseInt(btn.dataset.shift, 10);
+    encEl.value = caesarEncrypt(plainEl.value, currentShift);
     flash(encEl);
   });
 
   plainEl.addEventListener('input', () => {
-    encEl.value = caesarEncrypt(plainEl.value, parseInt(shiftEl.value, 10));
+    encEl.value = caesarEncrypt(plainEl.value, currentShift);
     flash(encEl);
   });
 
   encEl.addEventListener('input', () => {
-    plainEl.value = caesarDecrypt(encEl.value, parseInt(shiftEl.value, 10));
+    plainEl.value = caesarDecrypt(encEl.value, currentShift);
     flash(plainEl);
   });
 })();
@@ -99,20 +102,28 @@ function vigenereProcess(text, key, encrypt) {
 
 const SUBST_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?/~`\'"';
 
-let substEnc = {};
-let substDec = {};
-
-function shuffleStr(str) {
+function seededShuffle(str, seed) {
   const arr = str.split('');
+  let s = seed;
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i + 1);
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr.join('');
 }
 
-function generateSubstMapping() {
-  const shuffled = shuffleStr(SUBST_SET);
+const SUBST_PRESETS = [
+  seededShuffle(SUBST_SET, 42),
+  seededShuffle(SUBST_SET, 1337),
+  seededShuffle(SUBST_SET, 9999),
+];
+
+let substEnc = {};
+let substDec = {};
+
+function loadSubstMapping(index) {
+  const shuffled = SUBST_PRESETS[index];
   substEnc = {};
   substDec = {};
   for (let i = 0; i < SUBST_SET.length; i++) {
@@ -150,15 +161,18 @@ function renderSubstTable() {
 }
 
 (function initSubst() {
-  const plainEl    = document.getElementById('subst-plain');
-  const encEl      = document.getElementById('subst-encrypted');
-  const shuffleBtn = document.getElementById('subst-shuffle');
+  const plainEl = document.getElementById('subst-plain');
+  const encEl   = document.getElementById('subst-encrypted');
 
-  generateSubstMapping();
+  loadSubstMapping(0);
   renderSubstTable();
 
-  shuffleBtn.addEventListener('click', () => {
-    generateSubstMapping();
+  document.getElementById('subst-presets').addEventListener('click', (e) => {
+    const btn = e.target.closest('.preset-btn');
+    if (!btn) return;
+    document.querySelectorAll('#subst-presets .preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadSubstMapping(parseInt(btn.dataset.preset, 10));
     renderSubstTable();
     encEl.value = substEncrypt(plainEl.value);
     flash(encEl);
@@ -217,5 +231,60 @@ function morseToText(morse) {
   encEl.addEventListener('input', () => {
     plainEl.value = morseToText(encEl.value);
     flash(plainEl);
+  });
+})();
+
+// ===== CHEI SECRETE =====
+
+(function initSecret() {
+  const nameEl    = document.getElementById('secret-name');
+  const answerEl  = document.getElementById('secret-answer');
+  const submitBtn = document.getElementById('secret-submit');
+  const feedback  = document.getElementById('secret-feedback');
+
+  submitBtn.addEventListener('click', async () => {
+    const name   = nameEl.value.trim();
+    const answer = answerEl.value.trim();
+
+    if (!name) {
+      feedback.textContent = '⚠️ Introdu mai întâi numele tău!';
+      feedback.className = 'secret-feedback warn';
+      return;
+    }
+    if (!answer) {
+      feedback.textContent = '⚠️ Introdu parola descoperită!';
+      feedback.className = 'secret-feedback warn';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Se trimite...';
+    feedback.textContent = '';
+    feedback.className = 'secret-feedback';
+
+    try {
+      const res = await fetch('https://crocoai.perpetuummobile.tech/api/criptare/attempt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, answer })
+      });
+      const data = await res.json();
+
+      if (data.correct) {
+        feedback.innerHTML = '🎉 Felicitări! Ai descifrat codul!<br><br>Mesajul secret:<br><strong>„Construim viitorul câte o piesă de lego pe rând."</strong><br><br>Vino să mi-l spui pentru o surpriză! 🎁';
+        feedback.className = 'secret-feedback correct';
+        submitBtn.textContent = '✅ Trimis!';
+      } else {
+        feedback.textContent = '❌ Nu e corect. Mai încearcă!';
+        feedback.className = 'secret-feedback wrong';
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🔑 Trimite răspunsul';
+      }
+    } catch (e) {
+      feedback.textContent = '⚠️ Eroare de conexiune. Încearcă din nou.';
+      feedback.className = 'secret-feedback warn';
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🔑 Trimite răspunsul';
+    }
   });
 })();

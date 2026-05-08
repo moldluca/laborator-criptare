@@ -22,10 +22,12 @@
         <p class="cipher-desc">Fiecare literă se mută cu câteva locuri în alfabet. Dacă deplasarea e 3, A devine D, B devine E și tot așa!</p>
       </div>
       <div class="cipher-controls">
-        <label class="control-label">
-          Deplasare: <span id="caesar-shift-display">3</span>
-          <input type="range" id="caesar-shift" min="1" max="25" value="3">
-        </label>
+        <div class="preset-label">Alege varianta:</div>
+        <div class="preset-buttons" id="caesar-presets">
+          <button class="preset-btn active" data-shift="3">Varianta A</button>
+          <button class="preset-btn" data-shift="7">Varianta B</button>
+          <button class="preset-btn" data-shift="13">Varianta C</button>
+        </div>
       </div>
       <div class="cipher-boxes">
         <textarea id="caesar-plain" class="cipher-input" placeholder="Scrie textul normal aici..." rows="4"
@@ -65,7 +67,12 @@
         <p class="cipher-desc">Fiecare literă, cifră sau semn are un alt caracter secret în locul lui. Folosești un alfabet complet amestecat!</p>
       </div>
       <div class="cipher-controls">
-        <button id="subst-shuffle" class="shuffle-btn">🔀 Amestecă alfabetul</button>
+        <div class="preset-label">Alege varianta:</div>
+        <div class="preset-buttons" id="subst-presets">
+          <button class="preset-btn active" data-preset="0">Varianta A</button>
+          <button class="preset-btn" data-preset="1">Varianta B</button>
+          <button class="preset-btn" data-preset="2">Varianta C</button>
+        </div>
         <div id="subst-table" class="subst-table"></div>
       </div>
       <div class="cipher-boxes">
@@ -89,6 +96,22 @@
         <div class="cipher-arrow">⇄</div>
         <textarea id="morse-encrypted" class="cipher-input" placeholder="Codul Morse apare aici..." rows="4"
           autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <!-- ===== CHEI SECRETE ===== -->
+    <section class="cipher-section" id="section-secret" data-color="secret">
+      <div class="cipher-header">
+        <h2>🏆 Chei Secrete</h2>
+        <p class="cipher-desc">Ai primit un cod secret? Descifrea-l cu metodele de mai sus și trimite parola găsită!</p>
+      </div>
+      <div class="cipher-boxes secret-boxes">
+        <input type="text" id="secret-name" class="cipher-input secret-input"
+          placeholder="Numele tău..." autocomplete="off" spellcheck="false">
+        <input type="text" id="secret-answer" class="cipher-input secret-input"
+          placeholder="Parola descoperită..." autocomplete="off" autocorrect="off" spellcheck="false">
+        <button id="secret-submit" class="secret-submit-btn">🔑 Trimite răspunsul</button>
+        <div id="secret-feedback"></div>
       </div>
     </section>
 
