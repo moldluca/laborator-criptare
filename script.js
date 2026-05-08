@@ -219,4 +219,3 @@ function morseToText(morse) {
     flash(plainEl);
   });
 })();
-})();
