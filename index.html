@@ -7,6 +7,97 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <header class="site-header">
+    <h1>🔐 Laboratorul de Criptare</h1>
+    <p>Transformă mesajele tale în coduri secrete!</p>
+  </header>
+
+  <main>
+
+    <!-- ===== CAESAR ===== -->
+    <section class="cipher-section" id="section-caesar" data-color="caesar">
+      <div class="cipher-header">
+        <h2>🔄 Cifrul Caesar</h2>
+        <p class="cipher-desc">Fiecare literă se mută cu câteva locuri în alfabet. Dacă deplasarea e 3, A devine D, B devine E și tot așa!</p>
+      </div>
+      <div class="cipher-controls">
+        <label class="control-label">
+          Deplasare: <span id="caesar-shift-display">3</span>
+          <input type="range" id="caesar-shift" min="1" max="25" value="3">
+        </label>
+      </div>
+      <div class="cipher-boxes">
+        <textarea id="caesar-plain" class="cipher-input" placeholder="Scrie textul normal aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+        <div class="cipher-arrow">⇄</div>
+        <textarea id="caesar-encrypted" class="cipher-input" placeholder="Textul criptat apare aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <!-- ===== VIGENÈRE ===== -->
+    <section class="cipher-section" id="section-vigenere" data-color="vigenere">
+      <div class="cipher-header">
+        <h2>🗝️ Cifrul Vigenère</h2>
+        <p class="cipher-desc">Folosești un cuvânt-cheie secret. Fiecare literă din mesaj se mută diferit, după literele din cheia ta!</p>
+      </div>
+      <div class="cipher-controls">
+        <label class="control-label">
+          Cuvânt-cheie:
+          <input type="text" id="vigenere-key" class="key-input" value="ROBOT" maxlength="20"
+            autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+        </label>
+      </div>
+      <div class="cipher-boxes">
+        <textarea id="vigenere-plain" class="cipher-input" placeholder="Scrie textul normal aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+        <div class="cipher-arrow">⇄</div>
+        <textarea id="vigenere-encrypted" class="cipher-input" placeholder="Textul criptat apare aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <!-- ===== SUBSTITUȚIE EXTINSĂ ===== -->
+    <section class="cipher-section" id="section-subst" data-color="subst">
+      <div class="cipher-header">
+        <h2>🔀 Substituție Extinsă</h2>
+        <p class="cipher-desc">Fiecare literă, cifră sau semn are un alt caracter secret în locul lui. Folosești un alfabet complet amestecat!</p>
+      </div>
+      <div class="cipher-controls">
+        <button id="subst-shuffle" class="shuffle-btn">🔀 Amestecă alfabetul</button>
+        <div id="subst-table" class="subst-table"></div>
+      </div>
+      <div class="cipher-boxes">
+        <textarea id="subst-plain" class="cipher-input" placeholder="Scrie textul normal aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+        <div class="cipher-arrow">⇄</div>
+        <textarea id="subst-encrypted" class="cipher-input" placeholder="Textul criptat apare aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <!-- ===== MORSE ===== -->
+    <section class="cipher-section" id="section-morse" data-color="morse">
+      <div class="cipher-header">
+        <h2>📡 Codul Morse</h2>
+        <p class="cipher-desc">Codul Morse transformă literele în puncte (.) și linii (−). A devine .− , B devine −... și tot așa! Cuvintele sunt separate prin /.</p>
+      </div>
+      <div class="cipher-boxes">
+        <textarea id="morse-plain" class="cipher-input" placeholder="Scrie textul normal aici..." rows="4"
+          autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"></textarea>
+        <div class="cipher-arrow">⇄</div>
+        <textarea id="morse-encrypted" class="cipher-input" placeholder="Codul Morse apare aici..." rows="4"
+          autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Perpetuum Mobile FTC</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
